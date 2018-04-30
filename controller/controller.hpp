@@ -3,17 +3,25 @@
 
 #include <cstring>
 #include <cstdint>
+#include <map>
+#include <vector>
 
-#include "../parser/kvparser.hpp"
 
 using namespace std;
 
 namespace Controller
 {
-//	KVParser kvp;
+	typedef void (*handler)(vector<string> *args);
+//	map<string,handler> handlers;
+
+	void addHandler(string key, handler h);
+	void removeHandler(string key);
+
 	void handleServerConnection(uint16_t fd);
 	void handleServerDisconnect(uint16_t fd);
 	void handleServerInput(uint16_t fd, char *buffer);
+
+	void handleRequest(string name);
 }
 
 #endif //CONTROLLER_H header guard
