@@ -6,6 +6,7 @@
 #include "../parser/parser.hpp"
 #include "../misc/globals.hpp"
 #include "../misc/map_get.hpp"
+#include "../server/Server.hpp"
 
 using namespace std;
 
@@ -49,7 +50,9 @@ void Controller::handleServerInput(uint16_t fd, char *buffer)
 	{
 		printf("Controller: handler address = '%x'\n",h);
 		//call the callback function
-		h(&prs.values);
+		Server::Connector conn;
+		conn.source_fd = fd;
+		h(conn, &prs.values);
 	}
 	else
 	{

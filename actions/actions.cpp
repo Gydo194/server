@@ -1,10 +1,12 @@
 #include <iostream>
+
 #include "actions.hpp"
 #include "client-send-plugin/clientmanager.hpp"
+#include "../server/Server.hpp"
 
 using namespace std;
 
-void Actions::testAction(vector<string> *vals)
+void Actions::testAction(Server::Connector conn, vector<string> *vals)
 {
 	cout << "TestAction: argument count: " << vals->size() << endl;
 	uint8_t n = 0;
@@ -15,14 +17,14 @@ void Actions::testAction(vector<string> *vals)
 	}
 }
 
-void Actions::registerClientAction(vector<string> *vals)
+void Actions::registerClientAction(Server::Connector conn, vector<string> *vals)
 {
 	string name;
 	try
 	{
 		name = vals->at(1);
 		ClientManager::client c;
-		c.fd = 4;
+		c.fd = conn.source_fd;
 		ClientManager::addClient(name,c);
 	}
 	catch(out_of_range oor)
@@ -31,7 +33,7 @@ void Actions::registerClientAction(vector<string> *vals)
 	}
 }
 
-void Actions::sendMessageToClientAction(vector<string> *vals)
+void Actions::sendMessageToClientAction(Server::Connector conn, vector<string> *vals)
 {
 	string clientname = "DEFAULT_CLIENT_NAME";
 	string message = "DEFAULT_MESSAGE_CONTENT";

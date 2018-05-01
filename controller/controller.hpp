@@ -6,12 +6,13 @@
 #include <map>
 #include <vector>
 
+#include "../server/Server.hpp"
 
 using namespace std;
 
 namespace Controller
 {
-	typedef void (*handler)(vector<string> *args);
+	typedef void (*handler)(Server::Connector conn, vector<string> *args);
 //	map<string,handler> handlers;
 
 	void addHandler(string key, handler h);
