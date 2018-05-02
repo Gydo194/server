@@ -17,9 +17,9 @@ namespace Controller
 	void addHandler(string key, handler h);
 	void removeHandler(string key);
 
-	void handleServerConnection(uint16_t fd);
-	void handleServerDisconnect(uint16_t fd);
-	void handleServerInput(uint16_t fd, char *buffer);
+	void handleServerConnection(Server::Connector conn);
+	void handleServerDisconnect(Server::Connector conn);
+	void handleServerInput(Server::Connector conn, char *buffer);
 
 	void handleRequest(string name);
 }
