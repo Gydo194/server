@@ -40,15 +40,16 @@ public:
     struct Connector {
         uint16_t source_fd;
     };
-    
+
+    void setup(int port);
     void shutdown();
     void init();
     void loop();
 
     //callback setters
-    void onConnect(void (*ncc)(uint16_t fd));
-    void onInput(void (*rc)(uint16_t fd, char *buffer));
-    void onDisconnect(void (*dc)(uint16_t fd));
+    void onConnect(void (*ncc)(Connector conn));
+    void onInput(void (*rc)(Connector conn, char *buffer));
+    void onDisconnect(void (*dc)(Connector conn));
 
     uint16_t sendMessage(Connector conn, const char *messageBuffer);
     uint16_t sendMessage(Connector conn, char *messageBuffer);
@@ -75,13 +76,12 @@ private:
     char remote_ip[INET6_ADDRSTRLEN];
     //int numbytes;
 
-    void (*newConnectionCallback) (uint16_t fd);
-    void (*receiveCallback) (uint16_t fd, char *buffer);
-    void (*disconnectCallback) (uint16_t fd);
+    void (*newConnectionCallback) (Connector conn);
+    void (*receiveCallback) (Connector conn, char *buffer);
+    void (*disconnectCallback) (Connector conn);
 
 
     //function prototypes
-    void setup(int port);
     void initializeSocket();
     void bindSocket();
     void startListen();

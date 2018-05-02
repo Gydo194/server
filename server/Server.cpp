@@ -15,12 +15,12 @@
 
 Server::Server()
 {
-    setup(DEFAULT_PORT);
+    //setup(DEFAULT_PORT);
 }
 
 Server::Server(int port)
 {
-    setup(port);
+    //setup(port);
 }
 
 Server::Server(const Server& orig)
@@ -130,8 +130,10 @@ void Server::handleNewConnection()
         	#ifdef SERVER_DEBUG
         	printf("[SERVER] [CONNECTION] New connection on socket fd '%d'.\n",tempsocket_fd);
 		#endif
-    }
-    newConnectionCallback(tempsocket_fd); //call the callback
+    	}
+	Connector c;
+	c.source_fd = tempsocket_fd;
+	newConnectionCallback(c); //call the callback
 }
 
 void Server::recvInputFromExisting(int fd)
@@ -142,7 +144,9 @@ void Server::recvInputFromExisting(int fd)
         //problem
         if (0 == nbytesrecv)
 	{
-        	disconnectCallback((uint16_t)fd);
+		Connector c;
+		c.source_fd = (uint16_t) fd;
+        	disconnectCallback(c);
 		close(fd); //well then, bye bye.
         	FD_CLR(fd, &masterfds);
         	return;
@@ -157,8 +161,9 @@ void Server::recvInputFromExisting(int fd)
     #ifdef SERVER_DEBUG
     printf("[SERVER] [RECV] Received '%s' from client!\n", input_buffer);
     #endif
-    receiveCallback(fd,input_buffer);
-    //memset(&input_buffer, 0, INPUT_BUFFER_SIZE); //zero buffer //bzero
+    Connector c;
+    c.source_fd = (uint16_t) fd;
+    receiveCallback(c,input_buffer);
     bzero(&input_buffer,INPUT_BUFFER_SIZE); //clear input buffer
 }
 
@@ -170,7 +175,6 @@ void Server::loop()
     std::cout << "[SERVER] [MISC] calling select()\n";
     #endif
     int sel = select(maxfd + 1, &tempfds, NULL, NULL, NULL); //blocks until activity
-    //printf("[SERVER] [MISC] select() ret %d, processing...\n", sel);
     if (sel < 0) {
         perror("[SERVER] [ERROR] select() failed");
         shutdown();
@@ -201,17 +205,17 @@ void Server::init()
     startListen();
 }
 
-void Server::onInput(void (*rc)(uint16_t fd, char *buffer))
+void Server::onInput(void (*rc)(Connector, char *))
 {
     receiveCallback = rc;
 }
 
-void Server::onConnect(void(*ncc)(uint16_t))
+void Server::onConnect(void(*ncc)(Connector))
 {
     newConnectionCallback = ncc;
 }
 
-void Server::onDisconnect(void(*dc)(uint16_t))
+void Server::onDisconnect(void(*dc)(Connector))
 {
     disconnectCallback = dc;
 }

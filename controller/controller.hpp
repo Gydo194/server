@@ -6,20 +6,20 @@
 #include <map>
 #include <vector>
 
+#include "../server/Server.hpp"
 
 using namespace std;
 
 namespace Controller
 {
-	typedef void (*handler)(vector<string> *args);
-//	map<string,handler> handlers;
+	typedef void (*handler)(Server::Connector conn, vector<string> *args);
 
 	void addHandler(string key, handler h);
 	void removeHandler(string key);
 
-	void handleServerConnection(uint16_t fd);
-	void handleServerDisconnect(uint16_t fd);
-	void handleServerInput(uint16_t fd, char *buffer);
+	void handleServerConnection(Server::Connector conn);
+	void handleServerDisconnect(Server::Connector conn);
+	void handleServerInput(Server::Connector conn, char *buffer);
 
 	void handleRequest(string name);
 }

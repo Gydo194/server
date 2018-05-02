@@ -6,25 +6,26 @@
 #include "../parser/parser.hpp"
 #include "../misc/globals.hpp"
 #include "../misc/map_get.hpp"
+#include "../server/Server.hpp"
 
 using namespace std;
 
 Parser prs;
 map<string,Controller::handler> handlers;
 
-void Controller::handleServerConnection(uint16_t fd)
+void Controller::handleServerConnection(Server::Connector conn)
 {
-	cout << "Controller: got connect from " << fd << endl;
+	cout << "Controller: got connect from " << conn.source_fd << endl;
 }
 
-void Controller::handleServerDisconnect(uint16_t fd)
+void Controller::handleServerDisconnect(Server::Connector conn)
 {
-	cout << "Controller: got disconnect from " << fd << endl;
+	cout << "Controller: got disconnect from " << conn.source_fd << endl;
 }
 
-void Controller::handleServerInput(uint16_t fd, char *buffer)
+void Controller::handleServerInput(Server::Connector conn, char *buffer)
 {
-	cout << "Controller: got input '" << buffer << "'from " << fd << endl;
+	cout << "Controller: got input '" << buffer << "'from " << conn.source_fd << endl;
 	prs.parse(buffer);
 	for(string i : prs.values)
 	{
@@ -49,7 +50,7 @@ void Controller::handleServerInput(uint16_t fd, char *buffer)
 	{
 		printf("Controller: handler address = '%x'\n",h);
 		//call the callback function
-		h(&prs.values);
+		h(conn, &prs.values);
 	}
 	else
 	{
