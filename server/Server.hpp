@@ -40,7 +40,8 @@ public:
     struct Connector {
         uint16_t source_fd;
     };
-    
+
+    void setup(int port);
     void shutdown();
     void init();
     void loop();
@@ -81,7 +82,6 @@ private:
 
 
     //function prototypes
-    void setup(int port);
     void initializeSocket();
     void bindSocket();
     void startListen();

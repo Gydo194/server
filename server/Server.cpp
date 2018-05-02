@@ -15,12 +15,12 @@
 
 Server::Server()
 {
-    setup(DEFAULT_PORT);
+    //setup(DEFAULT_PORT);
 }
 
 Server::Server(int port)
 {
-    setup(port);
+    //setup(port);
 }
 
 Server::Server(const Server& orig)

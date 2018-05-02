@@ -20,12 +20,22 @@ void attachActions()
 
 int main(int argc, char **argv)
 {
+
+	int port = 9034;
+	if(argc > 1)
+	{
+		port = atoi(argv[1]);
+	}
+
+	//server = Server(port);
+	
 	//add controller actions
 	attachActions();
 	//set server callbacks
 	server.onConnect(&Controller::handleServerConnection);
 	server.onDisconnect(&Controller::handleServerDisconnect);
 	server.onInput(&Controller::handleServerInput);
+	server.setup(port);
 	server.init();
 	
 	//actual main loop
